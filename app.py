@@ -1,4 +1,4 @@
-   import streamlit as st
+import streamlit as st
 
 # Setup Halaman
 st.set_page_config(page_title="Study Planner & Teman AI", page_icon="📚", layout="centered")
