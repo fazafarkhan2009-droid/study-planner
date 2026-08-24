@@ -3,38 +3,43 @@ import streamlit as st
 # Setup Halaman
 st.set_page_config(page_title="Study Planner & AI Friend", page_icon="🏎️", layout="centered")
 
-# CSS Kustom: Tema McLaren F1 (Papaya Orange & Carbon Black)
+# CSS Kustom: Tema McLaren Orange & Putih Bersih (Clean Light Theme)
 st.markdown("""
     <style>
-    /* Latar Belakang Hitam Karbon dengan Gradien Oranye McLaren */
+    /* Latar Belakang Putih Bersih dengan Aksen Oranye Lembut */
     .stApp {
-        background-color: #0d0d0d;
+        background-color: #f8f9fa;
         background-image: 
-            linear-gradient(135deg, rgba(255, 128, 0, 0.18) 0%, transparent 50%),
-            radial-gradient(circle at 90% 10%, rgba(255, 102, 0, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at 10% 90%, rgba(204, 82, 0, 0.2) 0%, transparent 50%);
+            linear-gradient(135deg, rgba(255, 128, 0, 0.05) 0%, transparent 60%),
+            radial-gradient(circle at 90% 10%, rgba(255, 128, 0, 0.08) 0%, transparent 40%);
         background-attachment: fixed;
-        color: #f2f2f2;
+        color: #212529;
     }
 
-    /* Kartu/Container Widget */
+    /* Kartu/Container Widget Putih Bersih */
     div[data-testid="stVerticalBlock"] > div {
-        background-color: #171717;
-        border: 1px solid #ff8000;
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-left: 5px solid #ff8000;
         border-radius: 10px;
         padding: 12px;
-        box-shadow: 0 4px 12px rgba(255, 128, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* Judul Utama Warna McLaren Papaya Orange */
+    /* Judul Utama Warna Oranye McLaren */
     h1, h2, h3 {
-        color: #ff8000 !important;
+        color: #e67300 !important;
         font-weight: bold;
+    }
+
+    /* Teks biasa agar tetap jelas terbaca di latar putih */
+    p, label, .stMarkdown {
+        color: #212529 !important;
     }
 
     /* Tombol Utama Oranye Sporty */
     .stButton>button {
-        background: linear-gradient(135deg, #ff8000 0%, #cc6600 100%);
+        background: linear-gradient(135deg, #ff8000 0%, #e67300 100%);
         color: #ffffff;
         border-radius: 6px;
         border: none;
@@ -43,16 +48,16 @@ st.markdown("""
         transition: all 0.2s ease;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #ff9933 0%, #e67300 100%);
-        box-shadow: 0 0 10px rgba(255, 128, 0, 0.5);
+        background: linear-gradient(135deg, #ff9933 0%, #ff8000 100%);
+        box-shadow: 0 0 10px rgba(255, 128, 0, 0.3);
         color: #ffffff;
     }
 
-    /* Form Input */
+    /* Form Input Terang */
     .stTextInput>div>div>input, .stTextArea>div>div>textarea, .stSelectbox>div>div>div {
-        background-color: #242424 !important;
-        color: #ffffff !important;
-        border: 1px solid #404040 !important;
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
         border-radius: 6px;
     }
 
