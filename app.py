@@ -1,64 +1,71 @@
 import streamlit as st
 
 # Setup Halaman
-st.set_page_config(page_title="Study Planner & AI Friend", page_icon="📚", layout="centered")
+st.set_page_config(page_title="Study Planner & AI Friend", page_icon="🏎️", layout="centered")
 
-# CSS Kustom Ringan (Red-Black Abstract Theme tanpa Blur)
+# CSS Kustom: Tema McLaren F1 (Papaya Orange & Carbon Black)
 st.markdown("""
     <style>
-    /* Background Abstrak Merah-Hitam Ringan (Super Fast Rendering) */
+    /* Latar Belakang Hitam Karbon dengan Gradien Oranye McLaren */
     .stApp {
-        background-color: #0a0002;
+        background-color: #0d0d0d;
         background-image: 
-            linear-gradient(135deg, rgba(128, 0, 16, 0.25) 0%, transparent 60%),
-            radial-gradient(circle at 90% 10%, rgba(179, 0, 27, 0.2) 0%, transparent 40%),
-            radial-gradient(circle at 10% 90%, rgba(90, 0, 10, 0.3) 0%, transparent 50%);
+            linear-gradient(135deg, rgba(255, 128, 0, 0.18) 0%, transparent 50%),
+            radial-gradient(circle at 90% 10%, rgba(255, 102, 0, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 10% 90%, rgba(204, 82, 0, 0.2) 0%, transparent 50%);
         background-attachment: fixed;
-        color: #f5e6e8;
+        color: #f2f2f2;
     }
 
-    /* Container Card Ringan Tanpa Blur */
+    /* Kartu/Container Widget */
     div[data-testid="stVerticalBlock"] > div {
-        background-color: #120104;
-        border: 1px solid #5e000d;
+        background-color: #171717;
+        border: 1px solid #ff8000;
         border-radius: 10px;
         padding: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 12px rgba(255, 128, 0, 0.15);
     }
 
-    /* Judul Merah menyala */
+    /* Judul Utama Warna McLaren Papaya Orange */
     h1, h2, h3 {
-        color: #ff2a40 !important;
+        color: #ff8000 !important;
         font-weight: bold;
     }
 
-    /* Tombol Utama */
+    /* Tombol Utama Oranye Sporty */
     .stButton>button {
-        background: #80000e;
+        background: linear-gradient(135deg, #ff8000 0%, #cc6600 100%);
         color: #ffffff;
         border-radius: 6px;
-        border: 1px solid #ff1a35;
+        border: none;
         font-weight: bold;
         width: 100%;
+        transition: all 0.2s ease;
     }
     .stButton>button:hover {
-        background: #b30014;
-        border-color: #ffffff;
+        background: linear-gradient(135deg, #ff9933 0%, #e67300 100%);
+        box-shadow: 0 0 10px rgba(255, 128, 0, 0.5);
+        color: #ffffff;
     }
 
     /* Form Input */
     .stTextInput>div>div>input, .stTextArea>div>div>textarea, .stSelectbox>div>div>div {
-        background-color: #1c0207 !important;
+        background-color: #242424 !important;
         color: #ffffff !important;
-        border: 1px solid #66000e !important;
+        border: 1px solid #404040 !important;
         border-radius: 6px;
+    }
+
+    /* Progress Bar Oranye */
+    .stProgress > div > div > div > div {
+        background-color: #ff8000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # Judul Utama
-st.title("📚 Study Planner & Teman AI")
-st.write("Kelola tugas sekolahmu dan berdiskusi dengan Teman AI dalam satu halaman interaktif.")
+st.title("🏎️ Study Planner & Teman AI")
+st.write("Pantau tugas sekolahmu dengan kecepatan F1 dan diskusikan materi bersama Teman AI!")
 
 # Inisialisasi State
 if "daftar_tugas" not in st.session_state:
@@ -98,7 +105,7 @@ tugas_selesai = sum(1 for t in st.session_state.daftar_tugas if t["selesai"])
 if total_tugas > 0:
     persen = tugas_selesai / total_tugas
     st.progress(persen)
-    st.caption(f"📊 **Progress Belajar:** {tugas_selesai} dari {total_tugas} tugas selesai ({int(persen*100)}%)")
+    st.caption(f"📊 **Progress Lap Belajar:** {tugas_selesai} dari {total_tugas} tugas selesai ({int(persen*100)}%)")
 else:
     st.info("Belum ada tugas tersimpan.")
 
@@ -109,7 +116,7 @@ if st.session_state.daftar_tugas:
     for i, item in enumerate(tugas_terurut):
         c1, c2 = st.columns([3, 1])
         with c1:
-            status_icon = "✅" if item["selesai"] else "⏳"
+            status_icon = "🏁" if item["selesai"] else "🏎️"
             st.markdown(f"**{status_icon} [{item['matpel']}] {item['tugas']}**")
             st.caption(f"Deadline: {item['deadline']} | Prioritas: {item['prioritas']}")
         with c2:
@@ -121,18 +128,18 @@ if st.session_state.daftar_tugas:
 st.divider()
 
 # --- WIDGET 3: TEMAN AI (ASISTEN BELAJAR) ---
-st.header("🤖 Teman AI (Asisten Belajar)")
-st.write("Tanyakan ide, rumus, atau bantuan pengerjaan tugas di sini:")
+st.header("🤖 Teman AI (Pit Stop Asisten)")
+st.write("Tanyakan ide, rumus, atau strategi pengerjaan tugas di sini:")
 
-topik = st.text_input("Topik/Materi Tugas", placeholder="cth: Rumus Fisika, Ide Cerpen, dll.")
-pertanyaan = st.text_area("Pertanyaan kamu:", placeholder="Tulis soal atau bantuan yang kamu butuhkan...", height=100)
+topik = st.text_input("Topik/Materi Tugas", placeholder="cth: Fisika Kuantum, Puisi, Sejarah, dll.")
+pertanyaan = st.text_area("Pertanyaan kamu:", placeholder="Tuliskan kendala atau soal yang butuh bantuan...", height=100)
 
 if st.button("Tanyakan ke Teman AI"):
     if pertanyaan:
         st.markdown("**🤖 Teman AI Menjawab:**")
-        st.success(f"Dua panduan utama untuk membantu tugas **{topik if topik else 'kamu'}**:\n\n"
-                   f"1. **Analisis Masalah:** Pecah soal/tugas ini menjadi 2-3 langkah kecil agar lebih mudah dikerjakan.\n"
-                   f"2. **Langkah Awal:** Fokus selesaikan bagian termudah terlebih dahulu untuk membangun momentum belajar!")
+        st.success(f"Dua strategi utama untuk menyelesaikan materi **{topik if topik else 'kamu'}**:\n\n"
+                   f"1. **Strategi Pit Stop:** Bagi tugas ke beberapa segmen fokus (25 menit pengerjaan, 5 menit istirahat).\n"
+                   f"2. **Akselerasi Poin:** Selesaikan poin utama dulu sebelum merapikan bagian detailnya!")
     else:
         st.warning("Ketik pertanyaanmu terlebih dahulu!")
         
