@@ -24,13 +24,13 @@ else:
     input_text = "#ffffff"
     input_border = "#404040"
 
-# Menerapkan CSS Dinamis
-st.markdown(f"""
+# Menerapkan CSS Aman (Tanpa f-string berlebih agar tidak SyntaxError)
+css_code = f"""
     <style>
     .stApp {{
         background-color: {bg_app};
         color: {text_color};
-    }
+    }}
     div[data-testid="stVerticalBlock"] > div {{
         background-color: {card_bg};
         border: 1px solid {card_border};
@@ -38,7 +38,7 @@ st.markdown(f"""
         border-radius: 10px;
         padding: 12px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
+    }}
     h1, h2, h3 {{
         color: #ff8000 !important;
         font-weight: bold;
@@ -70,7 +70,8 @@ st.markdown(f"""
         background-color: #ff8000 !important;
     }}
     </style>
-""", unsafe_allow_html=True)
+"""
+st.markdown(css_code, unsafe_allow_html=True)
 
 # Judul Utama Halaman
 st.title("📚 Study Planner & Teman AI")
@@ -145,4 +146,3 @@ if st.button("Tanyakan ke Teman AI"):
                    f"2. **Fokus Utama:** Selesaikan bagian inti materi terlebih dahulu sebelum merapikan detailnya!")
     else:
         st.warning("Ketik pertanyaanmu terlebih dahulu!")
-        
