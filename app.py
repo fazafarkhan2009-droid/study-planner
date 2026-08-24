@@ -3,56 +3,54 @@ import streamlit as st
 # Setup Halaman
 st.set_page_config(page_title="Study Planner & AI Friend", page_icon="📚", layout="centered")
 
-# CSS Kustom: Latar Belakang Desain Lukisan Abstrak Merah-Hitam & Layout Kolom Tunggal
+# CSS Kustom Ringan (Red-Black Abstract Theme tanpa Blur)
 st.markdown("""
     <style>
-    /* Latar Belakang Lukisan Abstrak Merah & Hitam */
+    /* Background Abstrak Merah-Hitam Ringan (Super Fast Rendering) */
     .stApp {
-        background-color: #0d0003;
+        background-color: #0a0002;
         background-image: 
-            radial-gradient(circle at 15% 20%, rgba(179, 0, 0, 0.45) 0%, transparent 45%),
-            radial-gradient(circle at 85% 80%, rgba(128, 0, 32, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(255, 26, 26, 0.15) 0%, transparent 60%),
-            linear-gradient(135deg, #050001 0%, #1a0003 50%, #000000 100%);
+            linear-gradient(135deg, rgba(128, 0, 16, 0.25) 0%, transparent 60%),
+            radial-gradient(circle at 90% 10%, rgba(179, 0, 27, 0.2) 0%, transparent 40%),
+            radial-gradient(circle at 10% 90%, rgba(90, 0, 10, 0.3) 0%, transparent 50%);
         background-attachment: fixed;
-        color: #fce8e8;
+        color: #f5e6e8;
     }
 
-    /* Container Card Transparan Bergaya Abstrak */
+    /* Container Card Ringan Tanpa Blur */
     div[data-testid="stVerticalBlock"] > div {
-        background: rgba(15, 2, 4, 0.65);
-        border: 1px solid rgba(230, 0, 38, 0.3);
-        border-radius: 12px;
-        padding: 10px;
-        backdrop-filter: blur(8px);
+        background-color: #120104;
+        border: 1px solid #5e000d;
+        border-radius: 10px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
-    /* Teks & Judul */
+    /* Judul Merah menyala */
     h1, h2, h3 {
-        color: #ff3344 !important;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 0, 51, 0.4);
+        color: #ff2a40 !important;
+        font-weight: bold;
     }
 
     /* Tombol Utama */
     .stButton>button {
-        background: linear-gradient(135deg, #990012 0%, #4a0008 100%);
+        background: #80000e;
         color: #ffffff;
-        border-radius: 8px;
+        border-radius: 6px;
         border: 1px solid #ff1a35;
         font-weight: bold;
-        transition: all 0.3s ease;
+        width: 100%;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #e6001a 0%, #80000a 100%);
-        box-shadow: 0 0 10px rgba(255, 26, 53, 0.6);
+        background: #b30014;
         border-color: #ffffff;
     }
 
     /* Form Input */
     .stTextInput>div>div>input, .stTextArea>div>div>textarea, .stSelectbox>div>div>div {
-        background-color: rgba(25, 3, 7, 0.8) !important;
+        background-color: #1c0207 !important;
         color: #ffffff !important;
-        border: 1px solid #800014 !important;
+        border: 1px solid #66000e !important;
         border-radius: 6px;
     }
     </style>
@@ -109,7 +107,7 @@ if st.session_state.daftar_tugas:
     tugas_terurut = sorted(st.session_state.daftar_tugas, key=lambda x: skor[x["prioritas"]])
 
     for i, item in enumerate(tugas_terurut):
-        c1, c2 = st.columns([4, 1])
+        c1, c2 = st.columns([3, 1])
         with c1:
             status_icon = "✅" if item["selesai"] else "⏳"
             st.markdown(f"**{status_icon} [{item['matpel']}] {item['tugas']}**")
@@ -137,3 +135,4 @@ if st.button("Tanyakan ke Teman AI"):
                    f"2. **Langkah Awal:** Fokus selesaikan bagian termudah terlebih dahulu untuk membangun momentum belajar!")
     else:
         st.warning("Ketik pertanyaanmu terlebih dahulu!")
+        
