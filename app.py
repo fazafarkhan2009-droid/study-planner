@@ -1,14 +1,15 @@
 import streamlit as st
+import random
 
 # Setup Halaman
-st.set_page_config(page_title="Study Planner & Teman AI", page_icon="📚", layout="centered")
+st.set_page_config(page_title="BeatMood - Rekomendasi Musik", page_icon="ðŸŽµ", layout="centered")
 
 # --- PENGATURAN TEMA DI SIDEBAR ---
-st.sidebar.title("⚙️ Pengaturan")
-pilihan_tema = st.sidebar.radio("Pilih Tema:", ["Terang ☀️", "Gelap 🌙"])
+st.sidebar.title("âš™ï¸ Pengaturan")
+pilihan_tema = st.sidebar.radio("Pilih Tema:", ["Terang â˜€ï¸", "Gelap ðŸŒ™"])
 
 if "Terang" in pilihan_tema:
-    bg_app = "#f8f9fa"
+    bg_app = "#faf8f5"
     text_color = "#212529"
     card_bg = "#ffffff"
     card_border = "#dee2e6"
@@ -24,7 +25,7 @@ else:
     input_text = "#ffffff"
     input_border = "#404040"
 
-# Menerapkan CSS Aman (Tanpa f-string berlebih agar tidak SyntaxError)
+# CSS Styling
 css_code = f"""
     <style>
     .stApp {{
@@ -36,7 +37,7 @@ css_code = f"""
         border: 1px solid {card_border};
         border-left: 5px solid #ff8000;
         border-radius: 10px;
-        padding: 12px;
+        padding: 16px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }}
     h1, h2, h3 {{
@@ -60,89 +61,95 @@ css_code = f"""
         box-shadow: 0 0 10px rgba(255, 128, 0, 0.3);
         color: #ffffff;
     }}
-    .stTextInput>div>div>input, .stTextArea>div>div>textarea, .stSelectbox>div>div>div {{
+    .stSelectbox>div>div>div {{
         background-color: {input_bg} !important;
         color: {input_text} !important;
         border: 1px solid {input_border} !important;
         border-radius: 6px;
     }}
-    .stProgress > div > div > div > div {{
-        background-color: #ff8000 !important;
-    }}
     </style>
 """
 st.markdown(css_code, unsafe_allow_html=True)
 
-# Judul Utama Halaman
-st.title("📚 Study Planner & Teman AI")
-st.write("Kelola tugas sekolahmu dengan teratur dan diskusikan materi bersama Teman AI.")
+# Basis Data Lagu (List of Dictionaries)
+DATABASE_LAGU = [
+    # Sedih / Galau
+    {"judul": "Watch", "penyanyi": "Billie Eilish", "mood": "Sedih", "aktivitas": "Santai", "genre": "Pop / Melancholy", "link": "https://open.spotify.com/track/79hStyTWIOdUiZs1LRI9n2"},
+    {"judul": "Glimpse of Us", "penyanyi": "Joji", "mood": "Sedih", "aktivitas": "Santai", "genre": "R&B / Soul", "link": "https://open.spotify.com/track/6xGruYrP9YndvFAwcsA2qn"},
+    {"judul": "Traitor", "penyanyi": "Olivia Rodrigo", "mood": "Sedih", "aktivitas": "Santai", "genre": "Pop", "link": "https://open.spotify.com/track/50R1hG526L9vGvQc05m9t8"},
+    {"judul": "Jiwa Yang Bersedih", "penyanyi": "Ghea Indrawari", "mood": "Sedih", "aktivitas": "Pengantar Tidur", "genre": "Pop Indonesia", "link": "https://open.spotify.com/track/1J9v1aDk5a5Xp3f2a1b0c0"},
 
-# Inisialisasi State Tugas
-if "daftar_tugas" not in st.session_state:
-    st.session_state.daftar_tugas = []
+    # Semangat / Nge-gym / Olahraga
+    {"judul": "Outside", "penyanyi": "Calvin Harris ft. Ellie Goulding", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "EDM", "link": "https://open.spotify.com/track/3Tsq7z7bC1b9f6mQe3W4r5"},
+    {"judul": "Eye of the Tiger", "penyanyi": "Survivor", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "Rock", "link": "https://open.spotify.com/track/2tTmW7RDgOiR7bLR1V9Z1E"},
+    {"judul": "Stronger", "penyanyi": "Kanye West", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "Hip-Hop", "link": "https://open.spotify.com/track/4fzsw1z12V6E9vG2t1a8b9"},
+    {"judul": "Can't Hold Us", "penyanyi": "Macklemore & Ryan Lewis", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "Hip-Hop / Pop", "link": "https://open.spotify.com/track/3u9v1aDk5a5Xp3f2a1b0c0"},
 
-# --- WIDGET 1: INPUT TUGAS BARU ---
-st.header("➕ Tambah Tugas Baru")
-matpel = st.text_input("Mata Pelajaran")
-nama_tugas = st.text_input("Deskripsi Tugas")
-deadline = st.text_input("Deadline (cth: Besok/Senin)")
-prioritas = st.selectbox("Prioritas", ["Tinggi", "Sedang", "Rendah"])
+    # Fokus / Belajar
+    {"judul": "Lofi Study Beats", "penyanyi": "Lofi Girl", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Lofi Hip-Hop", "link": "https://open.spotify.com/track/0v1aDk5a5Xp3f2a1b0c0d1"},
+    {"judul": "River Flows in You", "penyanyi": "Yiruma", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Instrumental / Classical", "link": "https://open.spotify.com/track/058p42h45a6g7f8e9d0c1b"},
+    {"judul": "Clair de Lune", "penyanyi": "Claude Debussy", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Klasik", "link": "https://open.spotify.com/track/1v1aDk5a5Xp3f2a1b0c0d2"},
+    {"judul": "Experience", "penyanyi": "Ludovico Einaudi", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Neoclassical", "link": "https://open.spotify.com/track/2v1aDk5a5Xp3f2a1b0c0d3"},
 
-if st.button("Simpan Tugas"):
-    if matpel and nama_tugas:
-        st.session_state.daftar_tugas.append({
-            "matpel": matpel,
-            "tugas": nama_tugas,
-            "deadline": deadline,
-            "prioritas": prioritas,
-            "selesai": False
-        })
-        st.success(f"Tugas '{nama_tugas}' berhasil ditambahkan!")
-        st.rerun()
+    # Santai / Pengantar Tidur / Perjalanan
+    {"judul": "Night Changes", "penyanyi": "One Direction", "mood": "Santai", "aktivitas": "Perjalanan", "genre": "Pop", "link": "https://open.spotify.com/track/50R1hG526L9vGvQc05m9t9"},
+    {"judul": "Sunflower", "penyanyi": "Post Malone & Swae Lee", "mood": "Semangat", "aktivitas": "Perjalanan", "genre": "Hip-Hop / Pop", "link": "https://open.spotify.com/track/3v1aDk5a5Xp3f2a1b0c0d4"},
+    {"judul": "Until I Found You", "penyanyi": "Stephen Sanchez", "mood": "Santai", "aktivitas": "Pengantar Tidur", "genre": "Indie Pop", "link": "https://open.spotify.com/track/4v1aDk5a5Xp3f2a1b0c0d5"},
+    {"judul": "Golden Hour", "penyanyi": "JVKE", "mood": "Santai", "aktivitas": "Perjalanan", "genre": "Pop", "link": "https://open.spotify.com/track/5v1aDk5a5Xp3f2a1b0c0d6"}
+]
+
+# Header Utama
+st.title("ðŸŽµ BeatMood Generator")
+st.write("Temukan rekomendasi musik yang tepat berdasarkan suasana hati dan aktivitasmu!")
+
+# Input Form
+st.subheader("ðŸŽ¯ Pilih Kondisi Kamu")
+c1, c2 = st.columns(2)
+
+with c1:
+    mood_pilihan = st.selectbox("Suasana Hati (Mood):", ["Sedih", "Semangat", "Fokus", "Santai"])
+with c2:
+    aktivitas_pilihan = st.selectbox("Aktivitas:", ["Santai", "Nge-gym / Olahraga", "Belajar", "Perjalanan", "Pengantar Tidur"])
+
+# Logic Eksekusi
+if st.button("ðŸŽµ Cari Rekomendasi Lagu"):
+    # 1. Filtering berpasangan (Exact Match)
+    hasil_filter = [
+        lagu for lagu in DATABASE_LAGU 
+        if lagu["mood"] == mood_pilihan and lagu["aktivitas"] == aktivitas_pilihan
+    ]
+    
+    catatan_fallback = False
+    # 2. Fallback Logic: Jika tidak ada match persis, cari berdasarkan Aktivitas saja
+    if not hasil_filter:
+        hasil_filter = [
+            lagu for lagu in DATABASE_LAGU 
+            if lagu["aktivitas"] == aktivitas_pilihan
+        ]
+        catatan_fallback = True
+    
+    # 3. Fallback Cadangan: Jika masih kosong, ambil dari Mood saja
+    if not hasil_filter:
+        hasil_filter = [
+            lagu for lagu in DATABASE_LAGU 
+            if lagu["mood"] == mood_pilihan
+        ]
+
+    # 4. Pengacakan (Shuffle) & Limit (Maksimal 3 lagu)
+    if hasil_filter:
+        jumlah_tampil = min(3, len(hasil_filter))
+        rekomendasi = random.sample(hasil_filter, jumlah_tampil)
+        
+        st.subheader("ðŸŽ§ Rekomendasi Musik Untukmu")
+        if catatan_fallback:
+            st.info(f"Kombinasi persis belum ditemukan, menyajikan lagu terbaik untuk aktivitas **{aktivitas_pilihan}**:")
+            
+        for idx, lagu in enumerate(rekomendasi, 1):
+            with st.container():
+                st.markdown(f"### {idx}. {lagu['judul']}")
+                st.markdown(f"**Penyanyi:** {lagu['penyanyi']} | **Genre:** {lagu['genre']}")
+                st.markdown(f"**Cocok untuk:** Mood *{lagu['mood']}* saat *{lagu['aktivitas']}*")
+                st.markdown(f"[â–¶ï¸ Dengarkan di Spotify]({lagu['link']})")
+                st.write("")
     else:
-        st.error("Mata Pelajaran dan Deskripsi Tugas wajib diisi!")
-
-# --- WIDGET 2: PROGRESS & DAFTAR TUGAS ---
-st.header("📋 Progress & Daftar Tugas")
-
-total_tugas = len(st.session_state.daftar_tugas)
-tugas_selesai = sum(1 for t in st.session_state.daftar_tugas if t["selesai"])
-
-if total_tugas > 0:
-    persen = tugas_selesai / total_tugas
-    st.progress(persen)
-    st.caption(f"📊 **Progress Belajar:** {tugas_selesai} dari {total_tugas} tugas selesai ({int(persen*100)}%)")
-else:
-    st.info("Belum ada tugas tersimpan.")
-
-if st.session_state.daftar_tugas:
-    skor = {"Tinggi": 1, "Sedang": 2, "Rendah": 3}
-    tugas_terurut = sorted(st.session_state.daftar_tugas, key=lambda x: skor[x["prioritas"]])
-
-    for i, item in enumerate(tugas_terurut):
-        c1, c2 = st.columns([3, 1])
-        with c1:
-            status_icon = "✅" if item["selesai"] else "⏳"
-            st.markdown(f"**{status_icon} [{item['matpel']}] {item['tugas']}**")
-            st.caption(f"Deadline: {item['deadline']} | Prioritas: {item['prioritas']}")
-        with c2:
-            if not item["selesai"]:
-                if st.button("Selesai", key=f"btn_{i}"):
-                    item["selesai"] = True
-                    st.rerun()
-
-# --- WIDGET 3: TEMAN AI (ASISTEN BELAJAR) ---
-st.header("🤖 Teman AI (Asisten Belajar)")
-st.write("Tanyakan ide, rumus, atau strategi pengerjaan tugas di sini:")
-
-topik = st.text_input("Topik/Materi Tugas", placeholder="cth: Rumus Matematika, Ide Karangan, dll.")
-pertanyaan = st.text_area("Pertanyaan kamu:", placeholder="Tuliskan kendala atau soal yang butuh bantuan...", height=100)
-
-if st.button("Tanyakan ke Teman AI"):
-    if pertanyaan:
-        st.markdown("**🤖 Teman AI Menjawab:**")
-        st.success(f"Dua strategi utama untuk menyelesaikan materi **{topik if topik else 'kamu'}**:\n\n"
-                   f"1. **Analisis Soal:** Pecah tugas menjadi beberapa langkah kecil agar lebih mudah dikerjakan.\n"
-                   f"2. **Fokus Utama:** Selesaikan bagian inti materi terlebih dahulu sebelum merapikan detailnya!")
-    else:
-        st.warning("Ketik pertanyaanmu terlebih dahulu!")
+        st.warning("Belum ada lagu yang sesuai dengan pilihan tersebut.")
