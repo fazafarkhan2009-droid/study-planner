@@ -1,12 +1,12 @@
 import streamlit as st
 import random
 
-# Setup Halaman
-st.set_page_config(page_title="BeatMood - Rekomendasi Musik", page_icon="ðŸŽµ", layout="centered")
+# Setup Halaman Streamlit
+st.set_page_config(page_title="BeatMood - Rekomendasi Musik", page_icon="🎵", layout="centered")
 
-# --- PENGATURAN TEMA DI SIDEBAR ---
-st.sidebar.title("âš™ï¸ Pengaturan")
-pilihan_tema = st.sidebar.radio("Pilih Tema:", ["Terang â˜€ï¸", "Gelap ðŸŒ™"])
+# --- PENGATURAN TEMA KUSTOM DI SIDEBAR ---
+st.sidebar.title("⚙️ Pengaturan")
+pilihan_tema = st.sidebar.radio("Pilih Tema Tampilan:", ["Terang ☀️", "Gelap 🌙"])
 
 if "Terang" in pilihan_tema:
     bg_app = "#faf8f5"
@@ -25,7 +25,7 @@ else:
     input_text = "#ffffff"
     input_border = "#404040"
 
-# CSS Styling
+# Styling CSS Inline
 css_code = f"""
     <style>
     .stApp {{
@@ -71,7 +71,7 @@ css_code = f"""
 """
 st.markdown(css_code, unsafe_allow_html=True)
 
-# Basis Data Lagu (List of Dictionaries)
+# 1. STRUKTUR DATA: Database Lagu (List of Dictionaries)
 DATABASE_LAGU = [
     # Sedih / Galau
     {"judul": "Watch", "penyanyi": "Billie Eilish", "mood": "Sedih", "aktivitas": "Santai", "genre": "Pop / Melancholy", "link": "https://open.spotify.com/track/79hStyTWIOdUiZs1LRI9n2"},
@@ -79,7 +79,7 @@ DATABASE_LAGU = [
     {"judul": "Traitor", "penyanyi": "Olivia Rodrigo", "mood": "Sedih", "aktivitas": "Santai", "genre": "Pop", "link": "https://open.spotify.com/track/50R1hG526L9vGvQc05m9t8"},
     {"judul": "Jiwa Yang Bersedih", "penyanyi": "Ghea Indrawari", "mood": "Sedih", "aktivitas": "Pengantar Tidur", "genre": "Pop Indonesia", "link": "https://open.spotify.com/track/1J9v1aDk5a5Xp3f2a1b0c0"},
 
-    # Semangat / Nge-gym / Olahraga
+    # Semangat / Olahraga / Gym
     {"judul": "Outside", "penyanyi": "Calvin Harris ft. Ellie Goulding", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "EDM", "link": "https://open.spotify.com/track/3Tsq7z7bC1b9f6mQe3W4r5"},
     {"judul": "Eye of the Tiger", "penyanyi": "Survivor", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "Rock", "link": "https://open.spotify.com/track/2tTmW7RDgOiR7bLR1V9Z1E"},
     {"judul": "Stronger", "penyanyi": "Kanye West", "mood": "Semangat", "aktivitas": "Nge-gym / Olahraga", "genre": "Hip-Hop", "link": "https://open.spotify.com/track/4fzsw1z12V6E9vG2t1a8b9"},
@@ -91,19 +91,18 @@ DATABASE_LAGU = [
     {"judul": "Clair de Lune", "penyanyi": "Claude Debussy", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Klasik", "link": "https://open.spotify.com/track/1v1aDk5a5Xp3f2a1b0c0d2"},
     {"judul": "Experience", "penyanyi": "Ludovico Einaudi", "mood": "Fokus", "aktivitas": "Belajar", "genre": "Neoclassical", "link": "https://open.spotify.com/track/2v1aDk5a5Xp3f2a1b0c0d3"},
 
-    # Santai / Pengantar Tidur / Perjalanan
+    # Santai / Perjalanan / Tidur
     {"judul": "Night Changes", "penyanyi": "One Direction", "mood": "Santai", "aktivitas": "Perjalanan", "genre": "Pop", "link": "https://open.spotify.com/track/50R1hG526L9vGvQc05m9t9"},
     {"judul": "Sunflower", "penyanyi": "Post Malone & Swae Lee", "mood": "Semangat", "aktivitas": "Perjalanan", "genre": "Hip-Hop / Pop", "link": "https://open.spotify.com/track/3v1aDk5a5Xp3f2a1b0c0d4"},
     {"judul": "Until I Found You", "penyanyi": "Stephen Sanchez", "mood": "Santai", "aktivitas": "Pengantar Tidur", "genre": "Indie Pop", "link": "https://open.spotify.com/track/4v1aDk5a5Xp3f2a1b0c0d5"},
     {"judul": "Golden Hour", "penyanyi": "JVKE", "mood": "Santai", "aktivitas": "Perjalanan", "genre": "Pop", "link": "https://open.spotify.com/track/5v1aDk5a5Xp3f2a1b0c0d6"}
 ]
 
-# Header Utama
-st.title("ðŸŽµ BeatMood Generator")
+# 2. ANTARMUKA PENGGUNA (UI)
+st.title("🎵 BeatMood Generator")
 st.write("Temukan rekomendasi musik yang tepat berdasarkan suasana hati dan aktivitasmu!")
 
-# Input Form
-st.subheader("ðŸŽ¯ Pilih Kondisi Kamu")
+st.subheader("🎯 Pilih Kondisi Kamu")
 c1, c2 = st.columns(2)
 
 with c1:
@@ -111,16 +110,16 @@ with c1:
 with c2:
     aktivitas_pilihan = st.selectbox("Aktivitas:", ["Santai", "Nge-gym / Olahraga", "Belajar", "Perjalanan", "Pengantar Tidur"])
 
-# Logic Eksekusi
-if st.button("ðŸŽµ Cari Rekomendasi Lagu"):
-    # 1. Filtering berpasangan (Exact Match)
+# 3. ALUR LOGIKA ALGORITMA
+if st.button("🎵 Cari Rekomendasi Lagu"):
+    # Step A: Filter Pencocokan Persis (Mood DAN Aktivitas)
     hasil_filter = [
         lagu for lagu in DATABASE_LAGU 
         if lagu["mood"] == mood_pilihan and lagu["aktivitas"] == aktivitas_pilihan
     ]
     
     catatan_fallback = False
-    # 2. Fallback Logic: Jika tidak ada match persis, cari berdasarkan Aktivitas saja
+    # Step B: Fallback Logic (Jika tidak ada match persis, filter berdasarkan Aktivitas saja)
     if not hasil_filter:
         hasil_filter = [
             lagu for lagu in DATABASE_LAGU 
@@ -128,19 +127,19 @@ if st.button("ðŸŽµ Cari Rekomendasi Lagu"):
         ]
         catatan_fallback = True
     
-    # 3. Fallback Cadangan: Jika masih kosong, ambil dari Mood saja
+    # Step C: Fallback Cadangan (Berdasarkan Mood saja jika masih kosong)
     if not hasil_filter:
         hasil_filter = [
             lagu for lagu in DATABASE_LAGU 
             if lagu["mood"] == mood_pilihan
         ]
 
-    # 4. Pengacakan (Shuffle) & Limit (Maksimal 3 lagu)
+    # Step D: Pengacakan & Menampilkan Output Cards
     if hasil_filter:
         jumlah_tampil = min(3, len(hasil_filter))
         rekomendasi = random.sample(hasil_filter, jumlah_tampil)
         
-        st.subheader("ðŸŽ§ Rekomendasi Musik Untukmu")
+        st.subheader("🎧 Rekomendasi Musik Untukmu")
         if catatan_fallback:
             st.info(f"Kombinasi persis belum ditemukan, menyajikan lagu terbaik untuk aktivitas **{aktivitas_pilihan}**:")
             
@@ -149,7 +148,7 @@ if st.button("ðŸŽµ Cari Rekomendasi Lagu"):
                 st.markdown(f"### {idx}. {lagu['judul']}")
                 st.markdown(f"**Penyanyi:** {lagu['penyanyi']} | **Genre:** {lagu['genre']}")
                 st.markdown(f"**Cocok untuk:** Mood *{lagu['mood']}* saat *{lagu['aktivitas']}*")
-                st.markdown(f"[â–¶ï¸ Dengarkan di Spotify]({lagu['link']})")
+                st.markdown(f"[▶️ Dengarkan di Spotify]({lagu['link']})")
                 st.write("")
     else:
         st.warning("Belum ada lagu yang sesuai dengan pilihan tersebut.")
